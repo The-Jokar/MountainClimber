@@ -1,6 +1,11 @@
 # 23-S1-A2
 Mountain Climber Assignment
 
+## Group Members
+
+- Joseph Riley (jril0008@student.monash.edu)
+
+
 ## Getting Started
 
 Instructions are extremely similar to those of A1:
