@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from mountain import Mountain
+from data_structures.linked_stack import LinkedStack
 
 from typing import TYPE_CHECKING, Union
 
@@ -111,11 +112,42 @@ class Trail:
 
     def follow_path(self, personality: WalkerPersonality) -> None:
         """Follow a path and add mountains according to a personality."""
-        pass
+        from personality import PersonalityDecision
+        remaining_paths = LinkedStack()
+        no_paths = False
+        current_path = self.store
+
+        while not no_paths:
+            if isinstance(current_path, TrailSeries):
+                personality.add_mountain(current_path.mountain)
+                current_path = current_path.following.store
+
+            elif isinstance(current_path, TrailSplit):
+                remaining_paths.push(current_path.following)
+                choice = personality.select_branch(current_path.top, current_path.bottom)
+
+                if choice == PersonalityDecision.BOTTOM:
+                    current_path = current_path.bottom.store
+                
+                elif choice == PersonalityDecision.TOP:
+                    current_path = current_path.top.store
+
+                elif choice == PersonalityDecision.STOP:
+                    return
+            
+            elif len(remaining_paths) != 0:
+                temp = remaining_paths.pop()
+                current_path = temp.store
+            
+            else:
+                no_paths = True
+        
+        return
+        
 
     def collect_all_mountains(self) -> list[Mountain]:
         """Returns a list of all mountains on the trail."""
-        pass
+        
 
     def difficulty_maximum_paths(self, max_difficulty: int) -> list[list[Mountain]]: # Input to this should not exceed k > 50, at most 5 branches.
         # 1008/2085 ONLY!
